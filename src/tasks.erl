@@ -36,8 +36,11 @@
 %% Value - A single value of some type
 %% Complexity - O(n*u) where u is the complexity of the fold-func lambda function
 %%
+% Make sure the list is full
+c_foldr(List, _, _) when is_list(List) =:= false -> not_list;
 c_foldr([], Accum, _) -> Accum;
 c_foldr(List,Accum,Fold_fun) ->
+	% Take the last item in the list and use a function to append it to a new list
 	Last = lists:last(List),
 	Rest = lists:droplast(List),
 	c_foldr(Rest, Fold_fun(Accum, Last), Fold_fun).
@@ -51,9 +54,10 @@ c_foldr(List,Accum,Fold_fun) ->
 %% Value - A single value of some type
 %% Complexity - O(n*u) where u is the complexity of the fold-func lambda function
 %%
-c_foldl([], Accume, _) -> Accume;
-c_foldl([H|T],Accume,Fold_fun) ->
-	c_foldl(T, Fold_fun(Accume, H), Fold_fun).
+c_foldl(List, _, _) when not is_list(List) -> not_list; 
+c_foldl([], Accum, _) -> Accum;
+c_foldl([H|T],Accum,Fold_fun) ->
+	c_foldl(T, Fold_fun(Accum, H), Fold_fun).
 
 %%
 %% A naive implementation of the unfold functor pattern. This version is 
@@ -65,8 +69,11 @@ c_foldl([H|T],Accume,Fold_fun) ->
 %% Value - A list of elements of the same type as the initial state
 %% Complexity - O(n*u) where u is the complexity of the unfold-func lambda
 %%
+c_unfold(Value,_,_) when not is_integer(Value) -> not_number; 
+c_unfold(0,_,_) -> [];
 c_unfold(Count,State,Unfold_fun) ->
-	to_do.
+	{A, B} = Unfold_fun(Count, State),
+	[B] ++ c_unfold(A, B, Unfold_fun).
 
 
 
