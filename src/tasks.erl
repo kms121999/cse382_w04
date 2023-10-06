@@ -25,7 +25,7 @@
 %%%===================================================================
 %%% Public API functions
 %%%===================================================================
--export([c_foldl/3,c_foldr/3,c_unfold/3,generate_primes/1]).
+-export([c_foldl/3,c_foldr/3,c_unfold/3,generate_primes/1,generate_primesS/1,inc_if_prime/1]).
 
 %%
 %% An implementation of the fold right functor pattern.
@@ -91,13 +91,19 @@ c_unfold(Count,State,Unfold_fun) ->
 %%% Complexity - O(n!)
 %%% @end
 %%%-------------------------------------------------------------------
+
+% This is just a simple factorial function
 factorial(1) -> 1;
 factorial(Num)->
 	Num * factorial(Num - 1).
 
+% Uses Wilson's theorem to test primality
+% 'rem' is the modulo function in erlang
+% Don't worry if you don't fully understand it because we didn't either #blackmagic
 is_prime(Num)->
 	(factorial(Num - 1) + 1) rem Num =:= 0.
 
+% This will take a number (Limit) and it will prepend
 generate_canidates(0)-> [];
 generate_canidates(Limit)->
 	[(6 * Limit) + 1] ++ [(6 * Limit) - 1] ++ generate_canidates(Limit - 1).
@@ -105,9 +111,33 @@ generate_canidates(Limit)->
 
 generate_primes(Value) when not is_integer(Value) -> not_number; 
 generate_primes(0) -> [];
+% Generate canidates and keep primes then finally append 3 and 2 to the result
 generate_primes(Limit)->
 	[Num || Num <- generate_canidates(Limit), is_prime(Num)] ++ [3, 2].
-	
+
+
+% Teacher Solution
+generate_primesS(0)->[];
+generate_primesS(Limit)->
+	case c_unfold(Limit,1,fun(Count,_State) -> 
+						Lesser = 6*Count-1,
+						Greater = 6*Count+1,
+						{Count-1,inc_if_prime(Greater)++inc_if_prime(Lesser)}
+					 end) of
+		not_number -> not_number;
+		Result_list -> lists:flatten(Result_list)++[3,2]
+	end.
+
+%Helper function. Include if prime, don't include if not prime.
+inc_if_prime(N)->
+	case (factorial(N-1) rem N) == N-1 of
+		true -> [N];
+		_ -> []
+	end.
+
+% %Helper function. Calculate factorial
+% factorial(N)->
+% 	c_foldl(lists:seq(1,N),1,fun(Accum,X) -> Accum * X end).
 
 
 
