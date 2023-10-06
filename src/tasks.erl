@@ -91,8 +91,23 @@ c_unfold(Count,State,Unfold_fun) ->
 %%% Complexity - O(n!)
 %%% @end
 %%%-------------------------------------------------------------------
+factorial(1) -> 1;
+factorial(Num)->
+	Num * factorial(Num - 1).
+
+is_prime(Num)->
+	(factorial(Num - 1) + 1) rem Num =:= 0.
+
+generate_canidates(0)-> [];
+generate_canidates(Limit)->
+	[(6 * Limit) + 1] ++ [(6 * Limit) - 1] ++ generate_canidates(Limit - 1).
+	
+
+generate_primes(Value) when not is_integer(Value) -> not_number; 
+generate_primes(0) -> [];
 generate_primes(Limit)->
-	to_do.
+	[Num || Num <- generate_canidates(Limit), is_prime(Num)] ++ [3, 2].
+	
 
 
 
