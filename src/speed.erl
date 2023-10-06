@@ -6,7 +6,7 @@
 %%% such as disconnecting from any network, closing all other applications,
 %%% turning off background processes, etc. would have to be done.
 foldr_comparison() ->
-    TLAs = lists:sublist(list_lib:shuffle([[A,B,C]||A<-lists:seq(65,90),B<-lists:seq(65,90),C<-lists:seq(65,90)]),2000),
+    TLAs = lists:sublist([[A,B,C]||A<-lists:seq(65,90),B<-lists:seq(65,90),C<-lists:seq(65,90)],2000), % list_lib:shuffle([[A,B,C]||A<-lists:seq(65,90),B<-lists:seq(65,90),C<-lists:seq(65,90)])
     
     statistics(runtime),
     statistics(wall_clock),
@@ -35,7 +35,7 @@ foldr_comparison() ->
 %%% such as disconnecting from any network, closing all other applications,
 %%% turning off background processes, etc. would have to be done.
 foldl_comparison() ->
-    TLAs = lists:sublist(list_lib:shuffle([[A,B,C]||A<-lists:seq(65,90),B<-lists:seq(65,90),C<-lists:seq(65,90)]),2000),
+    TLAs = lists:sublist([[A,B,C]||A<-lists:seq(65,90),B<-lists:seq(65,90),C<-lists:seq(65,90)],2000), % list_lib:shuffle([[A,B,C]||A<-lists:seq(65,90),B<-lists:seq(65,90),C<-lists:seq(65,90)])
     
     statistics(runtime),
     statistics(wall_clock),
